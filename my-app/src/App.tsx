@@ -3,8 +3,10 @@ import './App.css';
 import UsersPage from './UsersPage';
 import AddUserPage from './AddUserPage';
 import EditUserPage from './EditUserPage';
+import ProfilePage from './ProfilePage';
 
 function MainPage() {
+  const navigate = useNavigate();
   return (
     <div style={{ minHeight: '100vh', background: '#d3d3d3' }}>
       <div style={{ background: '#8ec3e6', height: 48, display: 'flex', alignItems: 'center', padding: '0 32px', justifyContent: 'space-between', borderTop: '1px solid #2222', borderBottom: '1px solid #2222' }}>
@@ -15,7 +17,7 @@ function MainPage() {
           <span style={{ cursor: 'pointer', color: '#234' }}>организации</span>
           <span style={{ cursor: 'pointer', color: '#234' }}>транспорт</span>
         </div>
-        <div style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid #234', boxSizing: 'border-box' }}></div>
+        <div style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid #234', boxSizing: 'border-box', background: '#fff', cursor: 'pointer' }} onClick={() => navigate('/profile')} />
       </div>
       <div style={{ padding: 0, margin: 0, minHeight: '100vh' }}>
         <div style={{ margin: '60px auto 0 auto', width: 800 }}>
@@ -45,6 +47,7 @@ function App() {
       <Route path="/users/*" element={<UsersPage />} />
       <Route path="/users/add" element={<AddUserPage />} />
       <Route path="/users/edit/:id" element={<EditUserPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
     </Routes>
   );
 }
