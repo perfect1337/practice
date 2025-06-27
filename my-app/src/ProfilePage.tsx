@@ -1,12 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from './authSlice';
 import type { RootState } from './store';
 
 const mockOrganizations = ['Org1', 'Org2', 'Org3'];
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // MOCK user state
   const [photo, setPhoto] = useState<string | null>(null);
   const [email, setEmail] = useState('');
@@ -162,7 +164,15 @@ const ProfilePage: React.FC = () => {
         </div>
         {/* Кнопки */}
         <div style={{ display: 'flex', gap: 16, justifyContent: 'flex-end' }}>
-          <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '10px 18px', fontWeight: 500, cursor: 'pointer', fontSize: 15 }}>завершить другие сеансы</button>
+          <button
+            style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '10px 18px', fontWeight: 500, cursor: 'pointer', fontSize: 15 }}
+            onClick={() => {
+              dispatch(logout());
+              navigate('/login');
+            }}
+          >
+            завершить другие сеансы
+          </button>
           <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '10px 18px', fontWeight: 500, cursor: 'pointer', fontSize: 15 }}>скачать резервную копию <span style={{fontSize:18}}>↓</span></button>
           <button style={{ background: '#eee', color: '#234', border: 'none', borderRadius: 12, padding: '10px 18px', fontWeight: 500, cursor: 'pointer', fontSize: 15 }} onClick={() => setDeactivate(true)}>деактивировать аккаунт</button>
         </div>

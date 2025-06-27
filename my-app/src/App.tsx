@@ -4,6 +4,7 @@ import UsersPage from './UsersPage';
 import AddUserPage from './AddUserPage';
 import EditUserPage from './EditUserPage';
 import ProfilePage from './ProfilePage';
+import LoginPage from './pages/LoginPage';
 
 function MainPage() {
   const navigate = useNavigate();
@@ -48,6 +49,7 @@ function App() {
       <Route path="/users/add" element={<AddUserPage />} />
       <Route path="/users/edit/:id" element={<EditUserPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/login" element={<LoginPage />} />
     </Routes>
   );
 }
