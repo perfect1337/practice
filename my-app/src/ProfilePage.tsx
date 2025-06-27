@@ -22,6 +22,7 @@ const ProfilePage: React.FC = () => {
   const [deactivate, setDeactivate] = useState(false);
   const [message, setMessage] = useState('');
   const fileInput = useRef<HTMLInputElement>(null);
+  const [showPasswordSuccess, setShowPasswordSuccess] = useState(false);
 
   // MOCK user info
   const user = {
@@ -56,7 +57,8 @@ const ProfilePage: React.FC = () => {
     setPasswordEdit(false);
     setOldPassword('');
     setNewPassword('');
-    setMessage('Пароль изменён!');
+    setShowPasswordSuccess(true);
+    setTimeout(() => setShowPasswordSuccess(false), 3000);
   };
   const handleOrgSave = () => {
     setOrg(org);
@@ -77,6 +79,84 @@ const ProfilePage: React.FC = () => {
       margin: 0,
       position: 'relative',
     }}>
+      {/* Уведомление об успешной смене пароля */}
+      {showPasswordSuccess && (
+        <div style={{
+          position: 'fixed',
+          top: 32,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: '#8ec3e6',
+          color: '#444',
+          borderRadius: 32,
+          padding: '32px 24px',
+          fontSize: 22,
+          fontWeight: 500,
+          textAlign: 'center',
+          zIndex: 2000,
+          minWidth: 280,
+          maxWidth: '90vw',
+          boxShadow: '0 2px 16px #0002',
+        }}>
+          Готово!<br />Пароль успешно изменен.
+        </div>
+      )}
+      {/* Модалка смены пароля */}
+      {passwordEdit && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 1500,
+          background: 'rgba(0,0,0,0.65)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <div style={{
+            background: '#444',
+            borderRadius: 40,
+            padding: '36px 32px 32px 32px',
+            minWidth: 340,
+            maxWidth: '90vw',
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'stretch',
+          }}>
+            <button
+              onClick={() => setPasswordEdit(false)}
+              style={{ position: 'absolute', top: 18, right: 24, background: 'transparent', border: 'none', fontSize: 20, color: '#fff', cursor: 'pointer', borderRadius: '50%', width: 32, height: 32 }}
+            >
+              ×
+            </button>
+            <div style={{ fontSize: 26, fontWeight: 600, color: '#fff', marginBottom: 28, textAlign: 'center', letterSpacing: 1 }}>Изменение пароля</div>
+            <input
+              type="password"
+              placeholder="текущий пароль"
+              value={oldPassword}
+              onChange={e => setOldPassword(e.target.value)}
+              style={{ marginBottom: 18, padding: '14px 18px', borderRadius: 22, border: 'none', fontSize: 18, background: '#d9d9d9', color: '#444', outline: 'none' }}
+            />
+            <div style={{ position: 'relative', marginBottom: 28 }}>
+              <input
+                type="password"
+                placeholder="новый пароль"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                style={{ width: '100%', padding: '14px 18px', borderRadius: 22, border: 'none', fontSize: 18, background: '#d9d9d9', color: '#444', outline: 'none' }}
+              />
+              <span style={{ position: 'absolute', right: 18, top: '50%', transform: 'translateY(-50%)', color: '#888', fontSize: 18, cursor: 'pointer' }}>ⓘ</span>
+            </div>
+            <button
+              style={{ background: '#f9f6ed', color: '#444', border: 'none', borderRadius: 22, padding: '12px 0', fontWeight: 600, fontSize: 18, cursor: 'pointer', marginTop: 8 }}
+              onClick={handlePasswordSave}
+            >
+              изменить
+            </button>
+          </div>
+        </div>
+      )}
       {/* Меню */}
       <div style={{ background: '#8ec3e6', height: 48, display: 'flex', alignItems: 'center', padding: '0 32px', justifyContent: 'space-between', borderTop: '1px solid #2222', borderBottom: '1px solid #2222' }}>
         <div style={{ display: 'flex', gap: 32, fontSize: 18, color: '#234', fontWeight: 500 }}>
@@ -126,15 +206,7 @@ const ProfilePage: React.FC = () => {
               <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={() => setEmailEdit(true)}>указать</button>
             )}
             <div style={{ marginLeft: 32 }}>Пароль</div>
-            {passwordEdit ? (
-              <>
-                <input type="password" placeholder="Старый пароль" value={oldPassword} onChange={e => setOldPassword(e.target.value)} style={{padding: 6, borderRadius: 8, border: '1px solid #ccc'}} />
-                <input type="password" placeholder="Новый пароль" value={newPassword} onChange={e => setNewPassword(e.target.value)} style={{padding: 6, borderRadius: 8, border: '1px solid #ccc'}} />
-                <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={handlePasswordSave}>сохранить</button>
-              </>
-            ) : (
-              <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={() => setPasswordEdit(true)}>изменить</button>
-            )}
+            <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={() => setPasswordEdit(true)}>изменить</button>
           </div>
         </div>
         {/* Привязки */}
