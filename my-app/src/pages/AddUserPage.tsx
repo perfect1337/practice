@@ -11,4 +11,4 @@ const AddUserPage: React.FC = () => {
   );
 };
 
-export default AddUserPage; 
+export default AddUserPage;                                       
