@@ -13,7 +13,23 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   return (
-    <div style={{ background: '#8ec3e6', height: 48, display: 'flex', alignItems: 'center', padding: '0 32px', justifyContent: 'space-between', borderTop: '1px solid #2222', borderBottom: '1px solid #2222' }}>
+    <div style={{
+      background: '#8ec3e6',
+      height: 48,
+      width: '100vw',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '0 32px',
+      borderTop: '1px solid #2222',
+      borderBottom: '1px solid #2222',
+      boxSizing: 'border-box',
+      margin: 0,
+    }}>
       <div style={{ display: 'flex', gap: 32, fontSize: 18, color: '#234', fontWeight: 500 }}>
         {menu.map(item => (
           <span
@@ -32,7 +48,7 @@ const Header: React.FC = () => {
         ))}
       </div>
       <div
-        style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid #234', boxSizing: 'border-box', background: '#fff', cursor: 'pointer', position: 'relative' }}
+        style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid #234', boxSizing: 'border-box', background: '#fff', cursor: 'pointer', position: 'relative', marginLeft: 32 }}
         onClick={() => navigate('/profile')}
       >
         <div style={{position: 'absolute', top: 2, right: 2, width: 10, height: 10, borderRadius: '50%', background: '#8efc8e', border: '2px solid #fff'}}></div>

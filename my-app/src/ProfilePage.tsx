@@ -74,10 +74,12 @@ const ProfilePage: React.FC = () => {
   return (
     <div style={{
       minHeight: '100vh',
+      width: '100%',
       background: 'linear-gradient(180deg, #e0f0ff 0%, #b3d0e6 100%)',
-      padding: 0,
-      margin: 0,
       position: 'relative',
+      overflow: 'hidden',
+      paddingTop: 64,
+      fontFamily: 'Segoe UI, Arial, sans-serif',
     }}>
       {/* Уведомление об успешной смене пароля */}
       {showPasswordSuccess && (
@@ -157,19 +159,6 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       )}
-      {/* Меню */}
-      <div style={{ background: '#8ec3e6', height: 48, display: 'flex', alignItems: 'center', padding: '0 32px', justifyContent: 'space-between', borderTop: '1px solid #2222', borderBottom: '1px solid #2222' }}>
-        <div style={{ display: 'flex', gap: 32, fontSize: 18, color: '#234', fontWeight: 500 }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>главная</span>
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/users')}>пользователи</span>
-          <span style={{ cursor: 'pointer' }}>маршруты</span>
-          <span style={{ cursor: 'pointer' }}>организации</span>
-          <span style={{ cursor: 'pointer' }}>транспорт</span>
-        </div>
-        <div style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid #234', boxSizing: 'border-box', background: '#fff', cursor: 'pointer', position: 'relative' }}>
-          <div style={{position: 'absolute', top: 2, right: 2, width: 10, height: 10, borderRadius: '50%', background: '#8efc8e', border: '2px solid #fff'}}></div>
-        </div>
-      </div>
       {/* Контент */}
       <div style={{ maxWidth: 700, margin: '40px auto 0 auto', paddingBottom: 40 }}>
         {/* Основная информация */}
