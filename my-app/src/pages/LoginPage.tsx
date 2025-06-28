@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, clearError } from '../authSlice';
 import { useNavigate } from 'react-router-dom';
@@ -11,10 +11,31 @@ const LoginPage: React.FC = () => {
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      setIsTablet(width >= 768 && width < 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   React.useEffect(() => {
     if (isAuthenticated) navigate('/');
   }, [isAuthenticated, navigate]);
+
+  // Адаптивные размеры
+  const formWidth = isMobile ? 320 : isTablet ? 380 : 400;
+  const formPadding = isMobile ? '32px 20px' : isTablet ? '40px 28px' : '48px 32px';
+  const titleFontSize = isMobile ? 24 : isTablet ? 26 : 28;
+  const inputFontSize = isMobile ? 16 : isTablet ? 17 : 18;
+  const buttonFontSize = isMobile ? 16 : isTablet ? 17 : 18;
+  const borderRadius = isMobile ? 24 : isTablet ? 28 : 32;
 
   return (
     <div
@@ -58,23 +79,29 @@ const LoginPage: React.FC = () => {
           position: 'fixed',
           inset: 0,
           margin: 'auto',
-          width: 400,
+          width: formWidth,
           maxWidth: '90vw',
           height: 'fit-content',
-          borderRadius: 32,
+          borderRadius: borderRadius,
           background: 'rgba(255,255,255,0.25)',
           boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
           backdropFilter: 'blur(8px)',
           WebkitBackdropFilter: 'blur(8px)',
           border: '1.5px solid rgba(255,255,255,0.18)',
-          padding: '48px 32px 32px 32px',
+          padding: formPadding,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           zIndex: 3,
         }}
       >
-        <div style={{ fontSize: 28, fontWeight: 600, color: '#2a3a4a', marginBottom: 32, textAlign: 'center' }}>
+        <div style={{ 
+          fontSize: titleFontSize, 
+          fontWeight: 600, 
+          color: '#2a3a4a', 
+          marginBottom: isMobile ? 24 : isTablet ? 28 : 32, 
+          textAlign: 'center' 
+        }}>
           Вход в систему
         </div>
         <input
@@ -84,11 +111,11 @@ const LoginPage: React.FC = () => {
           onChange={e => { setUsername(e.target.value); if (error) dispatch(clearError()); }}
           style={{
             width: '100%',
-            marginBottom: 18,
-            padding: '14px 18px',
-            borderRadius: 16,
+            marginBottom: isMobile ? 14 : 18,
+            padding: isMobile ? '12px 16px' : '14px 18px',
+            borderRadius: isMobile ? 12 : 16,
             border: 'none',
-            fontSize: 18,
+            fontSize: inputFontSize,
             background: 'rgba(255,255,255,0.85)',
             outline: 'none',
             boxShadow: '0 1px 4px #0001',
@@ -102,11 +129,11 @@ const LoginPage: React.FC = () => {
           onChange={e => { setPassword(e.target.value); if (error) dispatch(clearError()); }}
           style={{
             width: '100%',
-            marginBottom: 28,
-            padding: '14px 18px',
-            borderRadius: 16,
+            marginBottom: isMobile ? 20 : isTablet ? 24 : 28,
+            padding: isMobile ? '12px 16px' : '14px 18px',
+            borderRadius: isMobile ? 12 : 16,
             border: 'none',
-            fontSize: 18,
+            fontSize: inputFontSize,
             background: 'rgba(255,255,255,0.85)',
             outline: 'none',
             boxShadow: '0 1px 4px #0001',
@@ -114,19 +141,28 @@ const LoginPage: React.FC = () => {
           }}
         />
         {error && (
-          <div style={{ color: '#a00', fontWeight: 500, marginBottom: 12, textAlign: 'center', width: '100%' }}>{error}</div>
+          <div style={{ 
+            color: '#a00', 
+            fontWeight: 500, 
+            marginBottom: isMobile ? 10 : 12, 
+            textAlign: 'center', 
+            width: '100%',
+            fontSize: isMobile ? 14 : 16,
+          }}>
+            {error}
+          </div>
         )}
         <button
           style={{
             width: '100%',
-            padding: '12px 0',
-            borderRadius: 16,
+            padding: isMobile ? '10px 0' : '12px 0',
+            borderRadius: isMobile ? 12 : 16,
             border: 'none',
             background: '#fff',
             color: '#2a3a4a',
             fontWeight: 600,
-            fontSize: 18,
-            marginBottom: 12,
+            fontSize: buttonFontSize,
+            marginBottom: isMobile ? 10 : 12,
             cursor: 'pointer',
             boxShadow: '0 1px 4px #0001',
             transition: 'background 0.2s',
@@ -141,14 +177,14 @@ const LoginPage: React.FC = () => {
         <button
           style={{
             width: '100%',
-            padding: '12px 0',
-            borderRadius: 16,
+            padding: isMobile ? '10px 0' : '12px 0',
+            borderRadius: isMobile ? 12 : 16,
             border: 'none',
             background: '#f5f5f5',
             color: '#2a3a4a',
             fontWeight: 600,
-            fontSize: 16,
-            marginBottom: 18,
+            fontSize: isMobile ? 14 : buttonFontSize,
+            marginBottom: isMobile ? 14 : 18,
             cursor: 'pointer',
             boxShadow: '0 1px 4px #0001',
             transition: 'background 0.2s',
@@ -163,7 +199,13 @@ const LoginPage: React.FC = () => {
         >
           Яндекс <span style={{fontWeight: 700}}>ID</span>
         </button>
-        <div style={{ color: '#2a3a4a', fontSize: 15, marginTop: 8, opacity: 0.8, textAlign: 'center', textDecoration: 'underline', cursor: 'pointer' }}>
+        <div style={{ 
+          color: '#666', 
+          fontSize: isMobile ? 12 : 14, 
+          textAlign: 'center', 
+          cursor: 'pointer',
+          textDecoration: 'underline',
+        }}>
           забыли логин или пароль?
         </div>
       </div>

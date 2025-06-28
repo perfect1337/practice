@@ -24,13 +24,26 @@ const ProfilePage: React.FC = () => {
   const fileInput = useRef<HTMLInputElement>(null);
   const [showPasswordSuccess, setShowPasswordSuccess] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 700);
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      setIsTablet(width >= 768 && width < 1024);
+    };
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Адаптивные размеры
+  const headerHeight = isMobile ? 60 : isTablet ? 70 : 80;
+  const containerMaxWidth = isMobile ? '98vw' : isTablet ? '90vw' : '700px';
+  const containerPadding = isMobile ? '0 16px' : isTablet ? '0 24px' : '0';
+  const gap = isMobile ? '1rem' : isTablet ? '1.5rem' : '1.8rem';
+  const borderRadius = isMobile ? '16px' : isTablet ? '24px' : '32px';
+  const padding = isMobile ? '16px 12px' : isTablet ? '24px 20px' : '32px 36px';
 
   // MOCK user info
   const user = {
@@ -93,7 +106,7 @@ const ProfilePage: React.FC = () => {
         overflowX: 'hidden',
         padding: 0,
         margin: 0,
-        paddingTop: 48,
+        paddingTop: headerHeight + 16,
         fontFamily: 'Segoe UI, Arial, sans-serif',
         zIndex: 0,
         display: 'flex',
@@ -105,20 +118,20 @@ const ProfilePage: React.FC = () => {
       {showPasswordSuccess && (
         <div style={{
           position: 'fixed',
-          top: 32,
+          top: headerHeight + 16,
           left: '50%',
           transform: 'translateX(-50%)',
           background: '#8ec3e6',
           color: '#444',
-          borderRadius: 32,
-          padding: '32px 24px',
-          fontSize: 22,
+          borderRadius: isMobile ? 24 : 32,
+          padding: isMobile ? '20px 16px' : isTablet ? '24px 20px' : '32px 24px',
+          fontSize: isMobile ? 18 : isTablet ? 20 : 22,
           fontWeight: 500,
           textAlign: 'center',
           zIndex: 2000,
-          minWidth: 280,
+          minWidth: isMobile ? 240 : 280,
           maxWidth: '90vw',
-          boxShadow: '0 2px 16px #0002',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
         }}>
           Готово!<br />Пароль успешно изменен.
         </div>
@@ -133,12 +146,13 @@ const ProfilePage: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          padding: isMobile ? '16px' : '24px',
         }}>
           <div style={{
             background: '#444',
-            borderRadius: 40,
-            padding: '36px 32px 32px 32px',
-            minWidth: 340,
+            borderRadius: isMobile ? 24 : 40,
+            padding: isMobile ? '24px 20px' : isTablet ? '28px 24px' : '36px 32px',
+            minWidth: isMobile ? 280 : isTablet ? 320 : 340,
             maxWidth: '90vw',
             boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
             position: 'relative',
@@ -148,30 +162,92 @@ const ProfilePage: React.FC = () => {
           }}>
             <button
               onClick={() => setPasswordEdit(false)}
-              style={{ position: 'absolute', top: 18, right: 24, background: 'transparent', border: 'none', fontSize: 20, color: '#fff', cursor: 'pointer', borderRadius: '50%', width: 32, height: 32 }}
+              style={{ 
+                position: 'absolute', 
+                top: isMobile ? 12 : 18, 
+                right: isMobile ? 16 : 24, 
+                background: 'transparent', 
+                border: 'none', 
+                fontSize: isMobile ? 18 : 20, 
+                color: '#fff', 
+                cursor: 'pointer', 
+                borderRadius: '50%', 
+                width: isMobile ? 28 : 32, 
+                height: isMobile ? 28 : 32,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
             >
               ×
             </button>
-            <div style={{ fontSize: 26, fontWeight: 600, color: '#fff', marginBottom: 28, textAlign: 'center', letterSpacing: 1 }}>Изменение пароля</div>
+            <div style={{ 
+              fontSize: isMobile ? 20 : isTablet ? 24 : 26, 
+              fontWeight: 600, 
+              color: '#fff', 
+              marginBottom: isMobile ? 20 : 28, 
+              textAlign: 'center', 
+              letterSpacing: 1 
+            }}>
+              Изменение пароля
+            </div>
             <input
               type="password"
               placeholder="текущий пароль"
               value={oldPassword}
               onChange={e => setOldPassword(e.target.value)}
-              style={{ marginBottom: 18, padding: '14px 18px', borderRadius: 22, border: 'none', fontSize: 18, background: '#d9d9d9', color: '#444', outline: 'none' }}
+              style={{ 
+                marginBottom: isMobile ? 14 : 18, 
+                padding: isMobile ? '12px 16px' : '14px 18px', 
+                borderRadius: isMobile ? 16 : 22, 
+                border: 'none', 
+                fontSize: isMobile ? 16 : 18, 
+                background: '#d9d9d9', 
+                color: '#444', 
+                outline: 'none' 
+              }}
             />
-            <div style={{ position: 'relative', marginBottom: 28 }}>
+            <div style={{ position: 'relative', marginBottom: isMobile ? 20 : 28 }}>
               <input
                 type="password"
                 placeholder="новый пароль"
                 value={newPassword}
                 onChange={e => setNewPassword(e.target.value)}
-                style={{ width: '100%', padding: '14px 18px', borderRadius: 22, border: 'none', fontSize: 18, background: '#d9d9d9', color: '#444', outline: 'none' }}
+                style={{ 
+                  width: '100%', 
+                  padding: isMobile ? '12px 16px' : '14px 18px', 
+                  borderRadius: isMobile ? 16 : 22, 
+                  border: 'none', 
+                  fontSize: isMobile ? 16 : 18, 
+                  background: '#d9d9d9', 
+                  color: '#444', 
+                  outline: 'none' 
+                }}
               />
-              <span style={{ position: 'absolute', right: 18, top: '50%', transform: 'translateY(-50%)', color: '#888', fontSize: 18, cursor: 'pointer' }}>ⓘ</span>
+              <span style={{ 
+                position: 'absolute', 
+                right: isMobile ? 16 : 18, 
+                top: '50%', 
+                transform: 'translateY(-50%)', 
+                color: '#888', 
+                fontSize: isMobile ? 16 : 18, 
+                cursor: 'pointer' 
+              }}>
+                ⓘ
+              </span>
             </div>
             <button
-              style={{ background: '#f9f6ed', color: '#444', border: 'none', borderRadius: 22, padding: '12px 0', fontWeight: 600, fontSize: 18, cursor: 'pointer', marginTop: 8 }}
+              style={{ 
+                background: '#f9f6ed', 
+                color: '#444', 
+                border: 'none', 
+                borderRadius: isMobile ? 16 : 22, 
+                padding: isMobile ? '10px 0' : '12px 0', 
+                fontWeight: 600, 
+                fontSize: isMobile ? 16 : 18, 
+                cursor: 'pointer', 
+                marginTop: 8 
+              }}
               onClick={handlePasswordSave}
             >
               изменить
@@ -182,12 +258,12 @@ const ProfilePage: React.FC = () => {
       <div
         style={{
           width: '100%',
-          maxWidth: isMobile ? '98vw' : '700px',
-          margin: isMobile ? '0' : '40px auto 0 auto',
-          padding: isMobile ? '0 2vw' : '0',
+          maxWidth: containerMaxWidth,
+          margin: isMobile ? '0 auto' : isTablet ? '20px auto 0 auto' : '40px auto 0 auto',
+          padding: containerPadding,
           display: 'flex',
           flexDirection: 'column',
-          gap: isMobile ? '1.2rem' : '1.8rem',
+          gap: gap,
           alignItems: 'center',
         }}
       >
@@ -195,24 +271,24 @@ const ProfilePage: React.FC = () => {
         <div
           style={{
             background: 'rgba(255,255,255,0.55)',
-            borderRadius: isMobile ? '18px' : '32px',
+            borderRadius: borderRadius,
             boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
             border: '1.5px solid rgba(255,255,255,0.18)',
-            padding: isMobile ? '18px 10px 14px 10px' : '32px 36px 28px 36px',
+            padding: padding,
             display: 'flex',
             flexDirection: isMobile ? 'column' : 'row',
             alignItems: isMobile ? 'center' : 'flex-start',
-            gap: isMobile ? '1.2rem' : '2rem',
+            gap: isMobile ? '1rem' : isTablet ? '1.5rem' : '2rem',
             width: '100%',
             minWidth: 0,
           }}
         >
           {/* Фото */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: isMobile ? 80 : 140 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
               style={{
-                width: isMobile ? 70 : 110,
-                height: isMobile ? 70 : 110,
+                width: isMobile ? 80 : isTablet ? 100 : 110,
+                height: isMobile ? 80 : isTablet ? 100 : 110,
                 borderRadius: '50%',
                 border: '2.5px solid #b3d0e6',
                 background: '#f8fcff',
@@ -222,12 +298,14 @@ const ProfilePage: React.FC = () => {
                 marginBottom: 8,
                 position: 'relative',
                 overflow: 'hidden',
+                cursor: 'pointer',
               }}
+              onClick={() => fileInput.current?.click()}
             >
               {photo ? (
                 <img src={photo} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
               ) : (
-                <svg width={isMobile ? 36 : 60} height={isMobile ? 36 : 60} viewBox="0 0 24 24" fill="none">
+                <svg width={isMobile ? 40 : isTablet ? 50 : 60} height={isMobile ? 40 : isTablet ? 50 : 60} viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="8" r="4" stroke="#b3d0e6" strokeWidth="2" />
                   <ellipse cx="12" cy="17" rx="7" ry="4" stroke="#b3d0e6" strokeWidth="2" />
                 </svg>
@@ -236,59 +314,97 @@ const ProfilePage: React.FC = () => {
               <span
                 style={{
                   position: 'absolute',
-                  right: isMobile ? 4 : 10,
-                  bottom: isMobile ? 4 : 10,
-                  width: isMobile ? 10 : 16,
-                  height: isMobile ? 10 : 16,
+                  right: isMobile ? 6 : isTablet ? 8 : 10,
+                  bottom: isMobile ? 6 : isTablet ? 8 : 10,
+                  width: isMobile ? 12 : isTablet ? 14 : 16,
+                  height: isMobile ? 12 : isTablet ? 14 : 16,
                   borderRadius: '50%',
                   background: '#8efc8e',
                   border: '2.5px solid #fff',
                 }}
               />
             </div>
+            <input
+              ref={fileInput}
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoChange}
+              style={{ display: 'none' }}
+            />
             <button
               style={{
-                marginTop: 6,
                 background: 'linear-gradient(90deg, #b3d0e6 0%, #e0f0ff 100%)',
                 border: 'none',
-                borderRadius: 12,
-                padding: isMobile ? '4px 10px' : '6px 18px',
-                fontSize: isMobile ? 13 : 15,
+                borderRadius: isMobile ? 12 : 16,
+                padding: isMobile ? '6px 12px' : isTablet ? '8px 16px' : '8px 20px',
+                fontSize: isMobile ? 12 : isTablet ? 14 : 16,
                 color: '#234',
                 fontWeight: 500,
                 cursor: 'pointer',
-                boxShadow: '0 1px 4px #0001',
-                transition: 'background 0.2s',
+                marginTop: 4,
               }}
-              onClick={() => fileInput.current && fileInput.current.click()}
             >
               изменить фото
             </button>
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInput}
-              style={{ display: 'none' }}
-              onChange={e => {
-                if (e.target.files && e.target.files[0]) {
-                  const reader = new FileReader();
-                  reader.onload = ev => setPhoto(ev.target?.result as string);
-                  reader.readAsDataURL(e.target.files[0]);
-                }
-              }}
-            />
           </div>
-          {/* Инфо */}
+
+          {/* Информация о пользователе */}
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 600, marginBottom: 8 }}>Основная информация</div>
-            <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 500, marginBottom: 6 }}>{user.name}</div>
-            <div style={{ fontSize: isMobile ? 13 : 16, marginBottom: 2 }}>
-              Роль: <span style={{ fontWeight: 600 }}>администратор <span style={{ color: '#f7b500' }}>☆</span></span>
+            <div style={{ 
+              fontSize: isMobile ? 20 : isTablet ? 24 : 28, 
+              fontWeight: 600, 
+              color: '#234', 
+              marginBottom: isMobile ? 12 : 16,
+              textAlign: isMobile ? 'center' : 'left',
+            }}>
+              {user.name}
             </div>
-            <div style={{ fontSize: isMobile ? 12 : 15, marginBottom: 2 }}>Дата регистрации:</div>
-            <div style={{ fontSize: isMobile ? 12 : 15, marginBottom: 2 }}>ID сотрудника:</div>
-            <div style={{ fontSize: isMobile ? 12 : 15, marginBottom: 2, display: 'flex', alignItems: 'center' }}>
-              Статус пользователя: <span style={{ color: '#2bbd2b', fontWeight: 500, marginLeft: 6 }}>активен <span style={{ display: 'inline-block', width: isMobile ? 8 : 10, height: isMobile ? 8 : 10, background: '#8efc8e', borderRadius: '50%', marginLeft: 4, verticalAlign: 'middle' }} /></span>
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: isMobile ? 'column' : 'row', 
+              gap: isMobile ? 8 : isTablet ? 16 : 24,
+              flexWrap: 'wrap',
+            }}>
+              <div style={{ 
+                fontSize: isMobile ? 14 : isTablet ? 16 : 18, 
+                color: '#234',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}>
+                <span style={{ fontWeight: 600 }}>Роль:</span>
+                <span>{user.role}</span>
+              </div>
+              <div style={{ 
+                fontSize: isMobile ? 14 : isTablet ? 16 : 18, 
+                color: '#234',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}>
+                <span style={{ fontWeight: 600 }}>Дата регистрации:</span>
+                <span>{user.registered}</span>
+              </div>
+              <div style={{ 
+                fontSize: isMobile ? 14 : isTablet ? 16 : 18, 
+                color: '#234',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}>
+                <span style={{ fontWeight: 600 }}>ID сотрудника:</span>
+                <span>{user.employeeId}</span>
+              </div>
+              <div style={{ 
+                fontSize: isMobile ? 14 : isTablet ? 16 : 18, 
+                color: '#234',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}>
+                <span style={{ fontWeight: 600 }}>Статус:</span>
+                <span style={{ color: '#8efc8e', fontWeight: 500 }}>{user.status}</span>
+              </div>
             </div>
           </div>
         </div>
