@@ -8,6 +8,7 @@ interface AuthState {
   user: null | {
     username: string;
     role: UserRole;
+    photo?: string | null;
   };
   error: string | null;
 }
@@ -35,7 +36,7 @@ const authSlice = createSlice({
       );
       if (found && found.role === 'admin') {
         state.isAuthenticated = true;
-        state.user = { username: found.username, role: found.role };
+        state.user = { username: found.username, role: found.role, photo: null };
         state.error = null;
       } else {
         state.isAuthenticated = false;

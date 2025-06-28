@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../store';
 
 const menu = [
   { label: 'главная', path: '/' },
@@ -14,6 +16,7 @@ const Header: React.FC = () => {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
   const [open, setOpen] = useState(false);
+  const userPhoto = useSelector((s: RootState) => s.auth.user?.photo);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 700);
@@ -25,7 +28,7 @@ const Header: React.FC = () => {
   return (
     <div style={{
       background: '#8ec3e6',
-      height: 48,
+      height: 80,
       width: '100vw',
       position: 'fixed',
       top: 0,
@@ -33,8 +36,8 @@ const Header: React.FC = () => {
       zIndex: 1000,
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '0 16px',
+      justifyContent: 'center',
+      padding: 0,
       borderTop: '1px solid #2222',
       borderBottom: '1px solid #2222',
       boxSizing: 'border-box',
@@ -108,7 +111,7 @@ const Header: React.FC = () => {
         </>
       ) : (
         <>
-          <div style={{ display: 'flex', gap: 32, fontSize: 18, color: '#234', fontWeight: 500 }}>
+          <div style={{ display: 'flex', gap: 48, fontSize: 22, color: '#234', fontWeight: 500, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
             {menu.map(item => (
               <span
                 key={item.path}
@@ -118,6 +121,7 @@ const Header: React.FC = () => {
                   borderBottom: location.pathname === item.path ? '2px solid #234' : 'none',
                   textDecoration: 'none',
                   transition: 'border 0.2s',
+                  textAlign: 'center',
                 }}
                 onClick={() => navigate(item.path)}
               >
@@ -126,10 +130,32 @@ const Header: React.FC = () => {
             ))}
           </div>
           <div
-            style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid #234', boxSizing: 'border-box', background: '#fff', cursor: 'pointer', position: 'relative', marginLeft: 32 }}
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: '50%',
+              border: '3px solid #234',
+              boxSizing: 'border-box',
+              background: '#fff',
+              cursor: 'pointer',
+              position: 'absolute',
+              right: '10vw',
+              top: 8,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             onClick={() => navigate('/profile')}
           >
-            <div style={{ position: 'absolute', top: 2, right: 2, width: 10, height: 10, borderRadius: '50%', background: '#8efc8e', border: '2px solid #fff' }}></div>
+            {userPhoto ? (
+              <img src={userPhoto} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+            ) : (
+              <svg width={40} height={40} viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="8" r="4" stroke="#b3d0e6" strokeWidth="2" />
+                <ellipse cx="12" cy="17" rx="7" ry="4" stroke="#b3d0e6" strokeWidth="2" />
+              </svg>
+            )}
+            <div style={{ position: 'absolute', top: 8, right: 8, width: 18, height: 18, borderRadius: '50%', background: '#8efc8e', border: '2.5px solid #fff' }}></div>
           </div>
         </>
       )}
