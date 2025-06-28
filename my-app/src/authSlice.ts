@@ -22,6 +22,7 @@ const testUsers = [
   { username: 'admin', password: 'admin', role: 'admin' },
   { username: 'admn', password: 'admn', role: 'admin' },
   // можно добавить других пользователей с role: 'user' для теста
+  { username: 'yandex_user', password: 'oauth', role: 'admin' }, // mock Яндекс ID
 ];
 
 const authSlice = createSlice({

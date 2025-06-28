@@ -153,6 +153,13 @@ const LoginPage: React.FC = () => {
             boxShadow: '0 1px 4px #0001',
             transition: 'background 0.2s',
           }}
+          onClick={() => {
+            // Редирект на Яндекс OAuth
+            const clientId = 'fake_yandex_client_id'; // замените на реальный client_id при интеграции
+            const redirectUri = `${window.location.origin}/oauth-callback`;
+            const url = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+            window.location.href = url;
+          }}
         >
           Яндекс <span style={{fontWeight: 700}}>ID</span>
         </button>

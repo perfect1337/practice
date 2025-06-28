@@ -5,6 +5,7 @@ import AddUserPage from './AddUserPage';
 import EditUserPage from './EditUserPage';
 import ProfilePage from './ProfilePage';
 import LoginPage from './pages/LoginPage';
+import OauthCallbackPage from './pages/OauthCallbackPage';
 
 function MainPage() {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ function App() {
       <Route path="/users/edit/:id" element={<EditUserPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/oauth-callback" element={<OauthCallbackPage />} />
     </Routes>
   );
 }
