@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from './authSlice';
@@ -23,6 +23,14 @@ const ProfilePage: React.FC = () => {
   const [message, setMessage] = useState('');
   const fileInput = useRef<HTMLInputElement>(null);
   const [showPasswordSuccess, setShowPasswordSuccess] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 700);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // MOCK user info
   const user = {
@@ -72,15 +80,27 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      width: '100%',
-      background: 'linear-gradient(180deg, #e0f0ff 0%, #b3d0e6 100%)',
-      position: 'relative',
-      overflow: 'hidden',
-      paddingTop: 64,
-      fontFamily: 'Segoe UI, Arial, sans-serif',
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        minWidth: '100vw',
+        minHeight: '100vh',
+        width: '100vw',
+        height: '100vh',
+        background: 'linear-gradient(180deg, #8ec3e6 0%, #b3d0e6 100%)',
+        overflowX: 'hidden',
+        padding: 0,
+        margin: 0,
+        paddingTop: 48,
+        fontFamily: 'Segoe UI, Arial, sans-serif',
+        zIndex: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
       {/* Уведомление об успешной смене пароля */}
       {showPasswordSuccess && (
         <div style={{
@@ -159,50 +179,177 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       )}
-      {/* Контент */}
-      <div style={{ maxWidth: 700, margin: '40px auto 0 auto', paddingBottom: 40 }}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: isMobile ? '98vw' : '700px',
+          margin: isMobile ? '0' : '40px auto 0 auto',
+          padding: isMobile ? '0 2vw' : '0',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: isMobile ? '1.2rem' : '1.8rem',
+          alignItems: 'center',
+        }}
+      >
         {/* Основная информация */}
-        <div style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 32, padding: 32, marginBottom: 24, display: 'flex', gap: 32, alignItems: 'flex-start', boxShadow: '0 2px 16px #0001', color: '#111' }}>
-          <div style={{ minWidth: 140, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 100, height: 100, borderRadius: '50%', border: '2px solid #888', background: '#f8f8f8', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-              {photo ? <img src={photo} alt="avatar" style={{width: '100%', height: '100%', objectFit: 'cover'}} /> : null}
+        <div
+          style={{
+            background: 'rgba(255,255,255,0.55)',
+            borderRadius: isMobile ? '18px' : '32px',
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
+            border: '1.5px solid rgba(255,255,255,0.18)',
+            padding: isMobile ? '18px 10px 14px 10px' : '32px 36px 28px 36px',
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: isMobile ? 'center' : 'flex-start',
+            gap: isMobile ? '1.2rem' : '2rem',
+            width: '100%',
+            minWidth: 0,
+          }}
+        >
+          {/* Фото */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: isMobile ? 80 : 140 }}>
+            <div
+              style={{
+                width: isMobile ? 70 : 110,
+                height: isMobile ? 70 : 110,
+                borderRadius: '50%',
+                border: '2.5px solid #b3d0e6',
+                background: '#f8fcff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 8,
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              {photo ? (
+                <img src={photo} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+              ) : (
+                <svg width={isMobile ? 36 : 60} height={isMobile ? 36 : 60} viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="8" r="4" stroke="#b3d0e6" strokeWidth="2" />
+                  <ellipse cx="12" cy="17" rx="7" ry="4" stroke="#b3d0e6" strokeWidth="2" />
+                </svg>
+              )}
+              {/* Статус */}
+              <span
+                style={{
+                  position: 'absolute',
+                  right: isMobile ? 4 : 10,
+                  bottom: isMobile ? 4 : 10,
+                  width: isMobile ? 10 : 16,
+                  height: isMobile ? 10 : 16,
+                  borderRadius: '50%',
+                  background: '#8efc8e',
+                  border: '2.5px solid #fff',
+                }}
+              />
             </div>
-            <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '8px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={() => fileInput.current?.click()}>изменить фото</button>
-            <input type="file" accept="image/*" ref={fileInput} style={{display: 'none'}} onChange={handlePhotoChange} />
+            <button
+              style={{
+                marginTop: 6,
+                background: 'linear-gradient(90deg, #b3d0e6 0%, #e0f0ff 100%)',
+                border: 'none',
+                borderRadius: 12,
+                padding: isMobile ? '4px 10px' : '6px 18px',
+                fontSize: isMobile ? 13 : 15,
+                color: '#234',
+                fontWeight: 500,
+                cursor: 'pointer',
+                boxShadow: '0 1px 4px #0001',
+                transition: 'background 0.2s',
+              }}
+              onClick={() => fileInput.current && fileInput.current.click()}
+            >
+              изменить фото
+            </button>
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInput}
+              style={{ display: 'none' }}
+              onChange={e => {
+                if (e.target.files && e.target.files[0]) {
+                  const reader = new FileReader();
+                  reader.onload = ev => setPhoto(ev.target?.result as string);
+                  reader.readAsDataURL(e.target.files[0]);
+                }
+              }}
+            />
           </div>
-          <div style={{ flex: 1, fontSize: 17, color: '#111' }}>
-            <div style={{ fontWeight: 600, fontSize: 18, marginBottom: 8, color: '#111' }}>Основная информация</div>
-            <div style={{ color: '#111' }}>{user.name}</div>
-            <div style={{ color: '#222' }}>Роль: <span style={{ fontWeight: 500 }}>администратор <span style={{ color: '#f7c948' }}>☆</span></span></div>
-            <div style={{ color: '#222' }}>Дата регистрации: <span style={{ fontWeight: 500 }}>{user.registered}</span></div>
-            <div style={{ color: '#222' }}>ID сотрудника: <span style={{ fontWeight: 500 }}>{user.employeeId}</span></div>
-            <div style={{ color: '#222' }}>Статус пользователя: <span style={{ color: '#1bbf1b', fontWeight: 500 }}>активен <span style={{ display: 'inline-block', width: 10, height: 10, background: '#8efc8e', borderRadius: '50%', marginLeft: 4, verticalAlign: 'middle' }}></span></span></div>
+          {/* Инфо */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 600, marginBottom: 8 }}>Основная информация</div>
+            <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 500, marginBottom: 6 }}>{user.name}</div>
+            <div style={{ fontSize: isMobile ? 13 : 16, marginBottom: 2 }}>
+              Роль: <span style={{ fontWeight: 600 }}>администратор <span style={{ color: '#f7b500' }}>☆</span></span>
+            </div>
+            <div style={{ fontSize: isMobile ? 12 : 15, marginBottom: 2 }}>Дата регистрации:</div>
+            <div style={{ fontSize: isMobile ? 12 : 15, marginBottom: 2 }}>ID сотрудника:</div>
+            <div style={{ fontSize: isMobile ? 12 : 15, marginBottom: 2, display: 'flex', alignItems: 'center' }}>
+              Статус пользователя: <span style={{ color: '#2bbd2b', fontWeight: 500, marginLeft: 6 }}>активен <span style={{ display: 'inline-block', width: isMobile ? 8 : 10, height: isMobile ? 8 : 10, background: '#8efc8e', borderRadius: '50%', marginLeft: 4, verticalAlign: 'middle' }} /></span>
+            </div>
           </div>
         </div>
         {/* Безопасность */}
-        <div style={{ background: 'rgba(255,255,255,0.6)', borderRadius: 24, padding: 24, marginBottom: 24, boxShadow: '0 2px 16px #0001', color: '#111' }}>
-          <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 12 }}>Безопасность</div>
-          <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-            <div>Email</div>
-            {email ? (
-              <span style={{fontWeight: 500}}>{email}</span>
-            ) : emailEdit ? (
-              <>
-                <input value={emailInput} onChange={e => setEmailInput(e.target.value)} style={{padding: 6, borderRadius: 8, border: '1px solid #ccc'}} />
-                <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={handleEmailSave}>сохранить</button>
-              </>
-            ) : (
-              <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={() => setEmailEdit(true)}>указать</button>
-            )}
-            <div style={{ marginLeft: 32 }}>Пароль</div>
-            <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={() => setPasswordEdit(true)}>изменить</button>
+        <div
+          style={{
+            background: 'rgba(255,255,255,0.45)',
+            borderRadius: isMobile ? 14 : 28,
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.10)',
+            border: '1.5px solid rgba(255,255,255,0.13)',
+            padding: isMobile ? '12px 10px 10px 10px' : '24px 36px 18px 36px',
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: 'center',
+            gap: isMobile ? '1rem' : '2rem',
+            width: '100%',
+            minWidth: 0,
+          }}
+        >
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: isMobile ? 14 : 17, fontWeight: 600, marginBottom: 8 }}>Безопасность</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 18, marginBottom: 8 }}>
+              <span style={{ fontSize: isMobile ? 12 : 15 }}>Email</span>
+              {email ? (
+                <span style={{fontWeight: 500}}>{email}</span>
+              ) : emailEdit ? (
+                <>
+                  <input value={emailInput} onChange={e => setEmailInput(e.target.value)} style={{padding: 6, borderRadius: 8, border: '1px solid #ccc'}} />
+                  <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={handleEmailSave}>сохранить</button>
+                </>
+              ) : (
+                <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={() => setEmailEdit(true)}>указать</button>
+              )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 18 }}>
+              <span style={{ fontSize: isMobile ? 12 : 15 }}>Пароль</span>
+              <button style={{ background: 'linear-gradient(90deg, #b3d0e6 0%, #e0f0ff 100%)', border: 'none', borderRadius: 10, padding: isMobile ? '3px 8px' : '4px 14px', fontSize: isMobile ? 12 : 14, color: '#234', fontWeight: 500, cursor: 'pointer', marginLeft: 8 }} onClick={() => setPasswordEdit(true)}>изменить</button>
+            </div>
           </div>
         </div>
         {/* Привязки */}
-        <div style={{ background: 'rgba(255,255,255,0.5)', borderRadius: 24, padding: 24, marginBottom: 24, boxShadow: '0 2px 16px #0001', color: '#111' }}>
-          <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 12 }}>Привязки</div>
-          <div>
-            Организация: {org ? <span style={{ color: '#1bbf1b', fontWeight: 500 }}>{org}</span> : <span style={{ color: 'red', fontWeight: 500 }}>не привязана</span>}
+        <div
+          style={{
+            background: 'rgba(255,255,255,0.40)',
+            borderRadius: isMobile ? 10 : 24,
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.08)',
+            border: '1.5px solid rgba(255,255,255,0.10)',
+            padding: isMobile ? '8px 10px 8px 10px' : '20px 36px 14px 36px',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: '100%',
+            minWidth: 0,
+          }}
+        >
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: isMobile ? 14 : 17, fontWeight: 600, marginBottom: 8 }}>Привязки</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 18 }}>
+              <span style={{ fontSize: isMobile ? 12 : 15 }}>Организация:</span>
+              {org ? <span style={{ color: '#1bbf1b', fontWeight: 500 }}>{org}</span> : <span style={{ color: 'red', fontWeight: 500 }}>не привязана</span>}
+            </div>
             {orgEdit ? (
               <>
                 <select value={org} onChange={e => setOrg(e.target.value)} style={{marginLeft: 8, padding: 6, borderRadius: 8, border: '1px solid #ccc'}}>
@@ -217,25 +364,97 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
         {/* Журнал активности */}
-        <div style={{ background: 'rgba(220,240,255,0.5)', borderRadius: 24, padding: 24, marginBottom: 24, boxShadow: '0 2px 16px #0001', color: '#111' }}>
-          <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 12 }}>Журнал активности <span style={{ color: '#888', fontSize: 15 }}>ⓘ</span></div>
-          <div style={{ color: '#444', fontSize: 15 }}>
-            {user.activity.map((a, i) => <div key={i}>{a}</div>)}
+        <div
+          style={{
+            background: 'rgba(255,255,255,0.35)',
+            borderRadius: isMobile ? 8 : 22,
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.06)',
+            border: '1.5px solid rgba(255,255,255,0.08)',
+            padding: isMobile ? '8px 10px 8px 10px' : '18px 36px 18px 36px',
+            fontSize: isMobile ? 12 : 15,
+            color: '#444',
+            width: '100%',
+            minWidth: 0,
+          }}
+        >
+          <div style={{ fontWeight: 600, marginBottom: 8 }}>Журнал активности</div>
+          <div style={{ opacity: 0.8 }}>
+            {user.activity.map((a, i) => (
+              <div key={i}>{a}</div>
+            ))}
           </div>
         </div>
         {/* Кнопки */}
-        <div style={{ display: 'flex', gap: 16, justifyContent: 'flex-end' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: isMobile ? 10 : 18,
+            marginTop: 8,
+            justifyContent: 'center',
+            width: '100%',
+            minWidth: 0,
+          }}
+        >
           <button
-            style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '10px 18px', fontWeight: 500, cursor: 'pointer', fontSize: 15 }}
+            style={{
+              background: 'linear-gradient(90deg, #b3d0e6 0%, #e0f0ff 100%)',
+              border: 'none',
+              borderRadius: 12,
+              padding: isMobile ? '8px 0' : '10px 22px',
+              fontSize: isMobile ? 13 : 15,
+              color: '#234',
+              fontWeight: 500,
+              cursor: 'pointer',
+              boxShadow: '0 1px 4px #0001',
+              transition: 'background 0.2s',
+              width: isMobile ? '100%' : 'auto',
+              minWidth: isMobile ? 0 : 120,
+            }}
             onClick={() => {
               dispatch(logout());
               navigate('/login');
             }}
           >
-            завершить другие сеансы
+            завершить другие сеансы <span style={{ fontSize: isMobile ? 15 : 18 }}>%</span>
           </button>
-          <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '10px 18px', fontWeight: 500, cursor: 'pointer', fontSize: 15 }}>скачать резервную копию <span style={{fontSize:18}}>↓</span></button>
-          <button style={{ background: '#eee', color: '#234', border: 'none', borderRadius: 12, padding: '10px 18px', fontWeight: 500, cursor: 'pointer', fontSize: 15 }} onClick={() => setDeactivate(true)}>деактивировать аккаунт</button>
+          <button
+            style={{
+              background: 'linear-gradient(90deg, #b3d0e6 0%, #e0f0ff 100%)',
+              border: 'none',
+              borderRadius: 12,
+              padding: isMobile ? '8px 0' : '10px 22px',
+              fontSize: isMobile ? 13 : 15,
+              color: '#234',
+              fontWeight: 500,
+              cursor: 'pointer',
+              boxShadow: '0 1px 4px #0001',
+              transition: 'background 0.2s',
+              width: isMobile ? '100%' : 'auto',
+              minWidth: isMobile ? 0 : 120,
+            }}
+          >
+            скачать резервную копию <span style={{ fontSize: isMobile ? 15 : 18 }}>↓</span>
+          </button>
+          <button
+            style={{
+              background: 'linear-gradient(90deg, #e0f0ff 0%, #b3d0e6 100%)',
+              border: 'none',
+              borderRadius: 12,
+              padding: isMobile ? '8px 0' : '10px 22px',
+              fontSize: isMobile ? 13 : 15,
+              color: '#234',
+              fontWeight: 500,
+              cursor: 'pointer',
+              boxShadow: '0 1px 4px #0001',
+              transition: 'background 0.2s',
+              width: isMobile ? '100%' : 'auto',
+              minWidth: isMobile ? 0 : 120,
+            }}
+            onClick={() => setDeactivate(true)}
+          >
+            деактивировать аккаунт
+          </button>
         </div>
         {deactivate && (
           <div style={{position: 'fixed', top:0, left:0, width:'100vw', height:'100vh', background:'#0007', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000}}>
