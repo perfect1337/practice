@@ -14,6 +14,8 @@ const ProfilePage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [emailEdit, setEmailEdit] = useState(false);
+  const [emailPasswordConfirm, setEmailPasswordConfirm] = useState(false);
+  const [emailPassword, setEmailPassword] = useState('');
   const [passwordEdit, setPasswordEdit] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -69,11 +71,27 @@ const ProfilePage: React.FC = () => {
       reader.readAsDataURL(e.target.files[0]);
     }
   };
+
+  const handleEmailPasswordConfirm = () => {
+    // Мокаем проверку пароля
+    if (emailPassword === 'admin') {
+      setEmailPasswordConfirm(false);
+      setEmailPassword('');
+      setEmailEdit(true);
+    } else {
+      setMessage('Неверный пароль!');
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
   const handleEmailSave = () => {
     setEmail(emailInput);
     setEmailEdit(false);
+    setEmailInput('');
     setMessage('Email сохранён!');
+    setTimeout(() => setMessage(''), 3000);
   };
+
   const handlePasswordSave = () => {
     setPasswordEdit(false);
     setOldPassword('');
@@ -81,14 +99,18 @@ const ProfilePage: React.FC = () => {
     setShowPasswordSuccess(true);
     setTimeout(() => setShowPasswordSuccess(false), 3000);
   };
+
   const handleOrgSave = () => {
     setOrg(org);
     setOrgEdit(false);
     setMessage('Организация привязана!');
+    setTimeout(() => setMessage(''), 3000);
   };
+
   const handleDeactivate = () => {
     setDeactivate(false);
     setMessage('Аккаунт деактивирован!');
+    setTimeout(() => setMessage(''), 3000);
     setTimeout(() => navigate('/'), 1200);
   };
 
@@ -136,6 +158,110 @@ const ProfilePage: React.FC = () => {
           Готово!<br />Пароль успешно изменен.
         </div>
       )}
+
+      {/* Модалка подтверждения пароля для email */}
+      {emailPasswordConfirm && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 1500,
+          background: 'rgba(0,0,0,0.65)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: isMobile ? '16px' : '24px',
+        }}>
+          <div style={{
+            background: '#444',
+            borderRadius: isMobile ? 24 : 40,
+            padding: isMobile ? '24px 20px' : isTablet ? '28px 24px' : '36px 32px',
+            minWidth: isMobile ? 280 : isTablet ? 320 : 340,
+            maxWidth: '90vw',
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'stretch',
+          }}>
+            <button
+              onClick={() => {
+                setEmailPasswordConfirm(false);
+                setEmailPassword('');
+              }}
+              style={{ 
+                position: 'absolute', 
+                top: isMobile ? 12 : 18, 
+                right: isMobile ? 16 : 24, 
+                background: 'transparent', 
+                border: 'none', 
+                fontSize: isMobile ? 18 : 20, 
+                color: '#fff', 
+                cursor: 'pointer', 
+                borderRadius: '50%', 
+                width: isMobile ? 28 : 32, 
+                height: isMobile ? 28 : 32,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              ×
+            </button>
+            <div style={{ 
+              fontSize: isMobile ? 20 : isTablet ? 24 : 26, 
+              fontWeight: 600, 
+              color: '#fff', 
+              marginBottom: isMobile ? 20 : 28, 
+              textAlign: 'center', 
+              letterSpacing: 1 
+            }}>
+              Подтверждение пароля
+            </div>
+            <div style={{
+              fontSize: isMobile ? 16 : isTablet ? 18 : 20,
+              color: '#fff',
+              marginBottom: isMobile ? 20 : 28,
+              textAlign: 'center',
+              opacity: 0.9,
+            }}>
+              Введите текущий пароль для изменения email
+            </div>
+            <input
+              type="password"
+              placeholder="текущий пароль"
+              value={emailPassword}
+              onChange={e => setEmailPassword(e.target.value)}
+              style={{ 
+                marginBottom: isMobile ? 20 : 28, 
+                padding: isMobile ? '12px 16px' : '14px 18px', 
+                borderRadius: isMobile ? 16 : 22, 
+                border: 'none', 
+                fontSize: isMobile ? 16 : 18, 
+                background: '#d9d9d9', 
+                color: '#444', 
+                outline: 'none' 
+              }}
+            />
+            <button
+              style={{ 
+                background: '#f9f6ed', 
+                color: '#444', 
+                border: 'none', 
+                borderRadius: isMobile ? 16 : 22, 
+                padding: isMobile ? '10px 0' : '12px 0', 
+                fontWeight: 600, 
+                fontSize: isMobile ? 16 : 18, 
+                cursor: 'pointer', 
+                marginTop: 8 
+              }}
+              onClick={handleEmailPasswordConfirm}
+            >
+              подтвердить
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Модалка смены пароля */}
       {passwordEdit && (
         <div style={{
@@ -343,6 +469,7 @@ const ProfilePage: React.FC = () => {
                 cursor: 'pointer',
                 marginTop: 4,
               }}
+              onClick={() => fileInput.current?.click()}
             >
               изменить фото
             </button>
@@ -436,9 +563,28 @@ const ProfilePage: React.FC = () => {
                   <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={handleEmailSave}>сохранить</button>
                 </>
               ) : (
-                <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={() => setEmailEdit(true)}>указать</button>
+                <button style={{ background: '#8ec3e6', color: '#234', border: 'none', borderRadius: 12, padding: '6px 16px', fontWeight: 500, cursor: 'pointer', fontSize: 14 }} onClick={() => setEmailPasswordConfirm(true)}>указать</button>
               )}
             </div>
+            {email && !emailEdit && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 18, marginBottom: 8 }}>
+                <button 
+                  style={{ 
+                    background: 'linear-gradient(90deg, #b3d0e6 0%, #e0f0ff 100%)', 
+                    border: 'none', 
+                    borderRadius: 10, 
+                    padding: isMobile ? '3px 8px' : '4px 14px', 
+                    fontSize: isMobile ? 12 : 14, 
+                    color: '#234', 
+                    fontWeight: 500, 
+                    cursor: 'pointer' 
+                  }} 
+                  onClick={() => setEmailPasswordConfirm(true)}
+                >
+                  изменить
+                </button>
+              </div>
+            )}
             <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 18 }}>
               <span style={{ fontSize: isMobile ? 12 : 15 }}>Пароль</span>
               <button style={{ background: 'linear-gradient(90deg, #b3d0e6 0%, #e0f0ff 100%)', border: 'none', borderRadius: 10, padding: isMobile ? '3px 8px' : '4px 14px', fontSize: isMobile ? 12 : 14, color: '#234', fontWeight: 500, cursor: 'pointer', marginLeft: 8 }} onClick={() => setPasswordEdit(true)}>изменить</button>

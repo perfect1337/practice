@@ -30,7 +30,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login(state, action: PayloadAction<{ username: string; password: string }>) {
+    login(state, action: PayloadAction<{ username: string; password: string; oauth?: boolean }>) {
       const found = testUsers.find(
         u => u.username === action.payload.username && u.password === action.payload.password
       );

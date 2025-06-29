@@ -43,9 +43,6 @@ const usersSlice = createSlice({
       const user = state.users.find(u => u.id === action.payload);
       if (user) user.status = 'active';
     },
-    removeUser(state, action: PayloadAction<string>) {
-      state.users = state.users.filter(u => u.id !== action.payload);
-    },
     addOrganization(state, action: PayloadAction<string>) {
       if (!state.organizations.includes(action.payload)) {
         state.organizations.push(action.payload);
@@ -54,5 +51,5 @@ const usersSlice = createSlice({
   },
 });
 
-export const { addUser, editUser, blockUser, unblockUser, removeUser, addOrganization } = usersSlice.actions;
+export const { addUser, editUser, blockUser, unblockUser, addOrganization } = usersSlice.actions;
 export default usersSlice.reducer; 

@@ -18,7 +18,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={withHeader(MainPage)()} />
-      <Route path="/users/*" element={withHeader(UsersPage)()} />
+      <Route path="/users" element={withHeader(UsersPage)()} />
       <Route path="/users/add" element={withHeader(AddUserPage)()} />
       <Route path="/users/edit/:id" element={withHeader(EditUserPage)()} />
       <Route path="/profile" element={withHeader(ProfilePage)()} />
